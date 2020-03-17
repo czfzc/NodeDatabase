@@ -1,5 +1,6 @@
 package lib;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -13,6 +14,7 @@ public class DataBlock implements Cloneable{
     private String semantic = "";
     private String geoHash = "";
     private int hibertCode = -1;
+    private static SimpleDateFormat format;
 
     public DataBlock(double longitude,double latitude,Date time,double datasize,long id,String semantic){
         this.longitude = longitude;
@@ -21,6 +23,7 @@ public class DataBlock implements Cloneable{
         this.datasize = datasize;
         this.id = id;
         this.semantic = semantic;
+        format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     }
 
     public int getHibertCode(){
@@ -99,5 +102,12 @@ public class DataBlock implements Cloneable{
     protected DataBlock clone() throws CloneNotSupportedException{
         DataBlock dataBlock = (DataBlock)super.clone();
         return dataBlock;
+    }
+
+    @Override
+    public String toString(){
+        return String.format("(%f,%f),%s,%.4f,%d,%s,%s,%d\n",
+            this.latitude,this.longitude,DataBlock.format.format(this.time),
+            this.datasize,this.id,this.semantic,this.getGeoHash(),this.getHibertCode());
     }
 }

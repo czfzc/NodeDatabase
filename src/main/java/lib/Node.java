@@ -10,9 +10,10 @@ public class Node{
     private double restSpace = 0;
     private long nodeId = 0;
 
-    public Node(long nodeId){
+    public Node(long nodeId,double totalSpace){
         this.dataBlocks = new LinkedList<>();
         this.nodeId = nodeId;
+        this.restSpace = totalSpace;
     }
 
     public Node(List<DataBlock> dataBlocks,double totalSpace,long nodeId) throws Exception{
@@ -78,6 +79,10 @@ public class Node{
 
     public double getSumBlockSize(){
         return DataBlock.getSumBlockSizeFromList(this.dataBlocks);
+    }
+
+    public List<DataBlock> getDatablocks(){
+        return this.dataBlocks;
     }
 
 }
