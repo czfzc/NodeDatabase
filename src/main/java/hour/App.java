@@ -6,21 +6,18 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-
 import lib.DataBlock;
 import lib.Node;
 import lib.NodeEngine;
-import util.Util;
 
 public final class App {
 
-    public static List<DataBlock> getData() throws FileNotFoundException,IOException,ParseException{
-        BufferedReader bf = new BufferedReader(new FileReader("./res/data.csv"));
+    public static List<DataBlock> getData(String path) throws FileNotFoundException,IOException,ParseException{
+        System.out.println(System.getProperty("user.dir"));
+        BufferedReader bf = new BufferedReader(new FileReader(path));
         String line = "";
         SimpleDateFormat smp = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         List<DataBlock> list = new LinkedList<DataBlock>();
@@ -35,8 +32,12 @@ public final class App {
     }
     public static void main(String args[])throws Exception{
         /*此处N是文档要求预留的节点数 */
-        int N = 10; 
-        List<DataBlock> dataBlocks = getData();
+        if(args.length<2){
+            System.out.printf("format: this.jar path N(nodenum)\n");
+            return;
+        }
+        int N = Integer.valueOf(args[1]); 
+        List<DataBlock> dataBlocks = getData(args[0]);
         //Util.printList(dataBlocks);
         
         NodeEngine nodeEngine = new NodeEngine(dataBlocks, N);
