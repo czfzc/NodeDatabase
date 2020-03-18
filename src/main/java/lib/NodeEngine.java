@@ -11,8 +11,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import hour.App;
-import util.Util;
+/**
+ * NodeEngine是负责将数据导入节点的引擎
+ */
 
 public class NodeEngine {
 
@@ -97,16 +98,29 @@ public class NodeEngine {
 */
 
     private void putBlocksInNodes(Map<Long,Node> nodes){
+        int datanum = 0;
+        double sumsize = 0;
+        int restsum = 0;
+        List<DataBlock> rest = null;
         for(Iterator<Map.Entry<Long,Node>> nodeite = nodes.entrySet().iterator();nodeite.hasNext();){
             Map.Entry<Long,Node> nodeentry = nodeite.next();
             Long nodeid = nodeentry.getKey();
             Node node = nodeentry.getValue();
-            List<DataBlock> rest = geohashDivide(node, this.dataBlocks);
-            System.out.printf("节点id:%d\t节点存储量:%f\n",nodeid,node.getSumBlockSize());
-            if(rest == null)
-                continue;
-            else this.dataBlocks.addAll(rest);
+            /*把上次剩下的吃掉 */
+            if(rest!=null){
+                LinkedHashMap<Integer,List<DataBlock>> temp = new LinkedHashMap<Integer,List<DataBlock>>();
+                temp.put(0, rest);
+                rest = putIntoNodeAndRemove(temp, node);
+                if(rest!=null)
+                    restsum += rest.size();
+            }
+            rest = geohashDivide(node, this.dataBlocks);
+            this.putListAndRemove(node);
+            sumsize += node.getSumBlockSize();
+            datanum += node.getDatablocks().size();
+            System.out.printf("节点id:%d\t节点存储量:%f\tdata数量:%d\n",nodeid,node.getSumBlockSize(),node.getDatablocks().size());
         }
+        System.out.println("记录插入成功："+datanum+"\t插入成功大小："+sumsize+"\t剩余记录："+restsum);
         
     }
 
@@ -140,6 +154,9 @@ public class NodeEngine {
         return rest;
     }
 
+    /**
+     * 将map中的所有list元素合并为list
+     */
     private static <T> List<DataBlock> mergeMapToList(Map<T,List<DataBlock>> map){
         List<DataBlock> list = new LinkedList<DataBlock>();
         for(T t:map.keySet()){
@@ -147,6 +164,26 @@ public class NodeEngine {
         }
         return list;
     }
+
+    private void putListAndRemove(Node node){
+        for(Iterator<DataBlock> ite = this.dataBlocks.iterator();ite.hasNext();){
+            DataBlock db = ite.next();
+            if(node.getRestSpace()<node.getInitSize()*0.01){
+                return;
+            }
+            if(node.addBlock(db)){
+                ite.remove();
+            }
+        }
+    }
+
+    /**
+     * 将map按顺序放入节点
+     * @param <T>
+     * @param map
+     * @param node
+     * @return
+     */
 
     private <T> List<DataBlock> putIntoNodeAndRemove(Map<T,List<DataBlock>> map,Node node){
         for(Iterator<Map.Entry<T,List<DataBlock>>> blockite = 
@@ -161,17 +198,16 @@ public class NodeEngine {
                 for(Iterator<DataBlock> ite = list.iterator();ite.hasNext();){
                     DataBlock db = ite.next();
                     if(node.addBlock(db)){
-                      //  this.dataBlocks.remove(db);
-                        this.dataBlocks = DataBlock.removeById(this.dataBlocks, db.getId());
+                        this.dataBlocks.remove(db);
+                     //  this.dataBlocks = DataBlock.removeById(this.dataBlocks, db.getId());
                         ite.remove();
+
                     };
                 }
+                return list;
                 
             //    Util.printList(list);
              //   System.out.println(DataBlock.getSumBlockSizeFromList(list));
-                if(list.size()==0)
-                    return null;
-                else return null;
             }
         }
         return null;

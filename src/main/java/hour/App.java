@@ -13,6 +13,10 @@ import lib.DataBlock;
 import lib.Node;
 import lib.NodeEngine;
 
+/**
+ * 项目运行入口类
+ */
+
 public final class App {
 
     public static List<DataBlock> getData(String path) throws FileNotFoundException,IOException,ParseException{
@@ -31,6 +35,9 @@ public final class App {
         return list;
     }
     public static void main(String args[])throws Exception{
+        args = new String[2];
+        args[0] = "res/data.csv";
+        args[1] = "400";
         /*此处N是文档要求预留的节点数 */
         if(args.length<2){
             System.out.printf("format: this.jar path N(nodenum)\n");
@@ -41,11 +48,11 @@ public final class App {
         //Util.printList(dataBlocks);
         
         NodeEngine nodeEngine = new NodeEngine(dataBlocks, N);
-        Map<Long,Node> nodes = nodeEngine.getNodes();
-        for(Map.Entry<Long,Node> nodeentry:nodes.entrySet()){
+     //   Map<Long,Node> nodes = nodeEngine.getNodes();
+      /*  for(Map.Entry<Long,Node> nodeentry:nodes.entrySet()){
             Long nodeid = nodeentry.getKey();
             Node node = nodeentry.getValue();
-        }
+        }*/
         
     }
       

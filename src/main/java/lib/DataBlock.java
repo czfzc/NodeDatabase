@@ -14,6 +14,7 @@ public class DataBlock implements Cloneable{
     private String semantic = "";
     private String geoHash = "";
     private int hibertCode = -1;
+    private long nodeid = -1;
     private static SimpleDateFormat format;
 
     public DataBlock(double longitude,double latitude,Date time,double datasize,long id,String semantic){
@@ -24,6 +25,14 @@ public class DataBlock implements Cloneable{
         this.id = id;
         this.semantic = semantic;
         format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    }
+
+    public long getNodeid(){
+        return this.nodeid;
+    }
+
+    public void setNodeid(long nodeid){
+        this.nodeid = nodeid;
     }
 
     public int getHibertCode(){
@@ -117,9 +126,9 @@ public class DataBlock implements Cloneable{
 
     @Override
     public String toString(){
-        return String.format("(%f,%f),%s,%.4f,%d,%s,%s,%d\n",
+        return String.format("(%f,%f),%s,%.4f,%d,%s,%s,%d, nodeid = %d\n",
             this.latitude,this.longitude,DataBlock.format.format(this.time),
-            this.datasize,this.id,this.semantic,this.getGeoHash(),this.getHibertCode());
+            this.datasize,this.id,this.semantic,this.getGeoHash(),this.getHibertCode(),this.getNodeid());
     }
 
 }

@@ -9,12 +9,14 @@ public class Node{
     private int blocksNum = 0;
     private double restSpace = 0;
     private long nodeId = 0;
+    private double initSize = 0;
 
 
     public Node(long nodeId,double totalSpace){
         this.dataBlocks = new LinkedList<>();
         this.nodeId = nodeId;
         this.restSpace = totalSpace;
+        this.initSize = totalSpace;
     }
 
     public Node(List<DataBlock> dataBlocks,double totalSpace,long nodeId) throws Exception{
@@ -26,6 +28,14 @@ public class Node{
         this.blocksNum = dataBlocks.size();
         this.dataBlocks = dataBlocks;
         this.nodeId = nodeId;
+    }
+
+    public double getInitSize(){
+        return this.initSize;
+    }
+
+    public double getRestSpace(){
+        return this.restSpace;
     }
 
     public DataBlock getBlockById(long id){
@@ -50,6 +60,7 @@ public class Node{
             this.dataBlocks.add(dataBlock);
             this.blocksNum ++;
             restSpace -= dataBlock.getDatasize();
+            dataBlock.setNodeid(this.nodeId);
             return true;
         }else return false;
     }
@@ -62,8 +73,12 @@ public class Node{
         this.restSpace -= addsize;
         this.blocksNum += dataBlocks.size();
         this.dataBlocks.addAll(dataBlocks);
+        for(DataBlock item:this.dataBlocks){
+            item.setNodeid(this.nodeId);
+        }
         return true;
     }
+
 
     public boolean delBlockById(long id){
         Iterator<DataBlock> ite = this.dataBlocks.iterator();
@@ -81,9 +96,10 @@ public class Node{
 
     public double getSumBlockSize(){
         double sum = DataBlock.getSumBlockSizeFromList(this.dataBlocks);
-        if(sum < restSpace*100)
+        /*if(sum < restSpace*100)
             return (sum+restSpace)*0.999-Math.random();
-        else return sum;
+        else return sum;*/
+        return sum;
     }
 
     public List<DataBlock> getDatablocks(){
