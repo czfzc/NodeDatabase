@@ -43,7 +43,7 @@ public class NodeEngine {
         this.dataBlocks = dataBlocks;
         putBlocksInNodes(nodes);
     }
-
+/*
     public static void main(String[] args)throws Exception{
         List<DataBlock> list = App.getData();
         Map<String,List<DataBlock>> map = groupByGeohash(list);
@@ -56,7 +56,7 @@ public class NodeEngine {
         List<DataBlock> rest = mergeMapToList(map);
         System.out.println("rest size "+rest.size());
         //Util.printList(node.getDatablocks());
-    }
+    }*/
 /*
     private void putBlocksInNodes(Map<Long,Node> nodes,List<DataBlock> blocks){
         List<DataBlock> current = blocks;
@@ -157,7 +157,22 @@ public class NodeEngine {
             if(node.addBlocks(list)){
                 blockite.remove();
                 this.dataBlocks.removeAll(list);
-            }else return list;
+            }else{
+                for(Iterator<DataBlock> ite = list.iterator();ite.hasNext();){
+                    DataBlock db = ite.next();
+                    if(node.addBlock(db)){
+                      //  this.dataBlocks.remove(db);
+                        this.dataBlocks = DataBlock.removeById(this.dataBlocks, db.getId());
+                        ite.remove();
+                    };
+                }
+                
+            //    Util.printList(list);
+             //   System.out.println(DataBlock.getSumBlockSizeFromList(list));
+                if(list.size()==0)
+                    return null;
+                else return null;
+            }
         }
         return null;
     }

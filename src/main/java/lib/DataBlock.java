@@ -97,6 +97,17 @@ public class DataBlock implements Cloneable{
         }
         return size;
     }
+
+    public static List<DataBlock> removeById(List<DataBlock> list,Long id){
+        List<DataBlock> toret = list;
+        for(Iterator<DataBlock> ite = toret.iterator();ite.hasNext();){
+            DataBlock item = ite.next();
+            if(item.getId() == id){
+                ite.remove();
+            }
+        }
+        return toret;
+    }
     
     @Override
     protected DataBlock clone() throws CloneNotSupportedException{
@@ -110,4 +121,5 @@ public class DataBlock implements Cloneable{
             this.latitude,this.longitude,DataBlock.format.format(this.time),
             this.datasize,this.id,this.semantic,this.getGeoHash(),this.getHibertCode());
     }
+
 }

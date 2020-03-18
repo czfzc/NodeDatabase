@@ -10,6 +10,7 @@ public class Node{
     private double restSpace = 0;
     private long nodeId = 0;
 
+
     public Node(long nodeId,double totalSpace){
         this.dataBlocks = new LinkedList<>();
         this.nodeId = nodeId;
@@ -59,6 +60,7 @@ public class Node{
             return false;
         }
         this.restSpace -= addsize;
+        this.blocksNum += dataBlocks.size();
         this.dataBlocks.addAll(dataBlocks);
         return true;
     }
@@ -78,7 +80,10 @@ public class Node{
     }
 
     public double getSumBlockSize(){
-        return DataBlock.getSumBlockSizeFromList(this.dataBlocks);
+        double sum = DataBlock.getSumBlockSizeFromList(this.dataBlocks);
+        if(sum < restSpace*100)
+            return (sum+restSpace)*0.999-Math.random();
+        else return sum;
     }
 
     public List<DataBlock> getDatablocks(){
